@@ -1825,14 +1825,48 @@ bool CppCodeParser::matchEnumItem(InnerNode *parent, EnumNode *enume)
     return true;
 }
 
+inline bool isPossibleEnumUnderlyingType(int tokenId)
+{
+    switch(tokenId)
+    {
+    case Tok_Ident:
+    case Tok_unsigned:
+    case Tok_int:
+    case Tok_long:
+    case Tok_char:
+    case Tok_short:
+    case Tok_int64:
+        return true;
+    default:
+        return false;
+    }
+}
+
 bool CppCodeParser::matchEnumDecl(InnerNode *parent)
 {
     QString name;
+    QString underlyingType;
+
+    bool strongType = false;
 
     if (!match(Tok_enum))
         return false;
+    if (match(Tok_class))
+        strongType = true;
     if (match(Tok_Ident))
         name = previousLexeme();
+    if (tok == Tok_Colon) {
+        readToken();
+        if (!isPossibleEnumUnderlyingType(tok))
+            return false;
+        readToken();
+        // support more than one identifiers for builting types like `unsigned long int`
+        while(isPossibleEnumUnderlyingType(tok)) {
+            underlyingType = underlyingType + " " + previousLexeme();
+            readToken();
+        }
+        underlyingType = underlyingType.trimmed();
+    }
     if (tok != Tok_LeftBrace)
         return false;
 
