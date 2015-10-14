@@ -1668,11 +1668,33 @@ QString DocumentNode::subTitle() const
 /*!
   The constructor for the node representing an enum type
   has a \a parent class and an enum type \a name.
+
+  C++11 \a strongType enumeratons and anumerations with an \a underlyingType are supported.
  */
-EnumNode::EnumNode(InnerNode *parent, const QString& name)
-    : LeafNode(Enum, parent, name), ft(0)
+EnumNode::EnumNode(InnerNode *parent, const QString& name, bool strongType, const QString &underlyingType)
+    : LeafNode(Enum, parent, name),
+      _strongType(strongType),
+      _underlyingType(underlyingType),
+      ft(0)
 {
     setGenus(Node::CPP);
+}
+
+/*!
+  If true, the enumeration is a strong type enumeration (c++11 feature)
+ */
+bool EnumNode::strongType() const
+{
+    return _strongType;
+}
+
+/*!
+  Returns the unterlying type (c++11 feature) for an enumeration or an empty string,
+  if no underlying type was given.
+ */
+const QString &EnumNode::underlyingType() const
+{
+    return _underlyingType;
 }
 
 /*!

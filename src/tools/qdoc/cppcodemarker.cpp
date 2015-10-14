@@ -399,6 +399,11 @@ QString CppCodeMarker::markedUpEnumValue(const QString &enumValue, const Node *r
         return enumValue;
 
     const Node *node = relative->parent();
+
+    const EnumNode* enumeration = dynamic_cast<const EnumNode*>(relative);
+    if(enumeration && enumeration->strongType())
+        node = enumeration;
+
     QString fullName;
     while (node->parent()) {
         fullName.prepend(markedUpName(node));

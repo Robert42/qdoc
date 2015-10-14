@@ -1873,7 +1873,7 @@ bool CppCodeParser::matchEnumDecl(InnerNode *parent)
     EnumNode *enume = 0;
 
     if (!name.isEmpty()) {
-        enume = new EnumNode(parent, name);
+        enume = new EnumNode(parent, name, strongType, underlyingType);
         enume->setAccess(access);
         enume->setLocation(location());
     }

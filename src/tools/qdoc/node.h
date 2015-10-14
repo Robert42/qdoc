@@ -773,8 +773,14 @@ private:
 class EnumNode : public LeafNode
 {
 public:
-    EnumNode(InnerNode* parent, const QString& name);
+    EnumNode(InnerNode* parent,
+             const QString& name,
+             bool strongType = false,
+             const QString &underlyingType = QString());
     virtual ~EnumNode() { }
+
+    bool strongType() const;
+    const QString &underlyingType() const;
 
     void addItem(const EnumItem& item);
     void setFlagsType(TypedefNode* typedeff);
@@ -786,6 +792,8 @@ public:
     QString itemValue(const QString &name) const;
 
 private:
+    bool _strongType;
+    QString _underlyingType;
     QList<EnumItem> itms;
     QSet<QString> names;
     const TypedefNode* ft;
