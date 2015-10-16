@@ -1857,12 +1857,9 @@ bool CppCodeParser::matchEnumDecl(InnerNode *parent)
         name = previousLexeme();
     if (tok == Tok_Colon) {
         readToken();
-        if (!isPossibleEnumUnderlyingType(tok))
-            return false;
-        readToken();
         // support more than one identifiers for builting types like `unsigned long int`
         while(isPossibleEnumUnderlyingType(tok)) {
-            underlyingType = underlyingType + " " + previousLexeme();
+            underlyingType += " " + lexeme();
             readToken();
         }
         underlyingType = underlyingType.trimmed();
