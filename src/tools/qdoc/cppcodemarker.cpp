@@ -252,6 +252,14 @@ QString CppCodeMarker::markedUpSynopsis(const Node *node,
             if (!documentedItems.isEmpty())
                 synopsis += QLatin1Char(' ');
             synopsis += QLatin1Char('}');
+        }else if (Detailed) {
+
+            if(enume->underlyingType().isEmpty() == false) {
+                synopsis += QLatin1Char(' ');
+                synopsis += QLatin1Char(':');
+                synopsis += QLatin1Char(' ');
+                synopsis += enume->underlyingType();
+            }
         }
         break;
     case Node::Typedef:
