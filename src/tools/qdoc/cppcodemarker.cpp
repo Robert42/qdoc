@@ -217,7 +217,13 @@ QString CppCodeMarker::markedUpSynopsis(const Node *node,
         break;
     case Node::Enum:
         enume = static_cast<const EnumNode *>(node);
-        synopsis = "enum " + name;
+
+        synopsis = "enum ";
+
+        if(enume->strongType() && (style == Summary || style == Detailed))
+            synopsis += "class ";
+
+        synopsis += name;
         if (style == Summary) {
             synopsis += " { ";
 
