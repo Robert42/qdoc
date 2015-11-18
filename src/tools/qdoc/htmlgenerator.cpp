@@ -4483,7 +4483,7 @@ void HtmlGenerator::generateManifestFile(const QString &manifest, const QString 
         foreach (const Node* child, en->childNodes()) {
             if (child->subType() == Node::File) {
                 QString file = child->name();
-                if (file.endsWith(".pro") || file.endsWith(".qmlproject")) {
+                if (file.endsWith("CMakeLists.txt") || file.endsWith(".pro") || file.endsWith(".qmlproject")) {
                     proFiles << file;
                 }
             }
@@ -4498,7 +4498,8 @@ void HtmlGenerator::generateManifestFile(const QString &manifest, const QString 
                 for (int j = 0; j < proFiles.size(); j++)
                 {
                     if (proFiles[j].endsWith(QStringLiteral("%1/%1.pro").arg(exampleName))
-                            || proFiles[j].endsWith(QStringLiteral("%1/%1.qmlproject").arg(exampleName))) {
+                            || proFiles[j].endsWith(QStringLiteral("%1/%1.qmlproject").arg(exampleName))
+                            || proFiles[j].endsWith(QStringLiteral("%1/CMakeLists.txt").arg(exampleName))) {
                         writer.writeAttribute("projectPath", examplesPath + proFiles[j]);
                         proWithExampleNameFound = true;
                         break;

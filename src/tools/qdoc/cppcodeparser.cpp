@@ -2453,6 +2453,7 @@ void CppCodeParser::createExampleFileNodes(DocumentNode *dn)
                                     proFileName,
                                     userFriendlyFilePath);
         if (fullPath.isEmpty()) {
+            QString tmp2 = proFileName;
             proFileName = examplePath + QLatin1Char('/') + examplePath.split(QLatin1Char('/')).last() + ".qmlproject";
             userFriendlyFilePath.clear();
             fullPath = Config::findFile(dn->doc().location(),
@@ -2461,12 +2462,21 @@ void CppCodeParser::createExampleFileNodes(DocumentNode *dn)
                                         proFileName,
                                         userFriendlyFilePath);
             if (fullPath.isEmpty()) {
-                QString details = QLatin1String("Example directories: ") + exampleDirs.join(QLatin1Char(' '));
-                if (!exampleFiles.isEmpty())
-                    details += QLatin1String(", example files: ") + exampleFiles.join(QLatin1Char(' '));
-                dn->location().warning(tr("Cannot find file '%1' or '%2'").arg(tmp).arg(proFileName), details);
-                dn->location().warning(tr("  EXAMPLE PATH DOES NOT EXIST: %1").arg(examplePath), details);
-                return;
+                proFileName = examplePath + QLatin1Char('/') + "CMakeLists.txt";
+                userFriendlyFilePath.clear();
+                fullPath = Config::findFile(dn->doc().location(),
+                                            exampleFiles,
+                                            exampleDirs,
+                                            proFileName,
+                                            userFriendlyFilePath);
+                if (fullPath.isEmpty()) {
+                    QString details = QLatin1String("Example directories: ") + exampleDirs.join(QLatin1Char(' '));
+                    if (!exampleFiles.isEmpty())
+                        details += QLatin1String(", example files: ") + exampleFiles.join(QLatin1Char(' '));
+                    dn->location().warning(tr("Cannot find file '%1', '%2' or '%3'").arg(tmp).arg(tmp2).arg(proFileName), details);
+                    dn->location().warning(tr("  EXAMPLE PATH DOES NOT EXIST: %1").arg(examplePath), details);
+                    return;
+                }
             }
         }
     }
