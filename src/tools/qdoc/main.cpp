@@ -86,6 +86,8 @@ typedef QPair<QString, QTranslator*> Translator;
 static QList<Translator> translators;
 #endif
 
+QStringList unlistedModules;
+
 /*!
   Read some XML indexes containing definitions from other
   documentation sets. \a config contains a variable that
@@ -351,6 +353,8 @@ static void processQdocconfFile(const QString &fileName)
         qdb->newPrimaryTree(project);
     else
         qdb->setPrimaryTree(project);
+
+    unlistedModules = config.getStringList(CONFIG_UNLISTEDMODULES);
 
     dependModules = config.getStringList(CONFIG_DEPENDS);
     dependModules.removeDuplicates();

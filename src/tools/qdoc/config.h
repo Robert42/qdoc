@@ -225,6 +225,7 @@ struct ConfigStrings
     static QString TAGFILE;
     static QString TRANSLATORS;
     static QString URL;
+    static QString UNLISTEDMODULES;
     static QString VERSION;
     static QString VERSIONSYM;
     static QString FILEEXTENSIONS;
@@ -299,6 +300,7 @@ struct ConfigStrings
 #define CONFIG_TABSIZE ConfigStrings::TABSIZE
 #define CONFIG_TAGFILE ConfigStrings::TAGFILE
 #define CONFIG_TRANSLATORS ConfigStrings::TRANSLATORS
+#define CONFIG_UNLISTEDMODULES ConfigStrings::UNLISTEDMODULES
 #define CONFIG_URL ConfigStrings::URL
 #define CONFIG_VERSION ConfigStrings::VERSION
 #define CONFIG_VERSIONSYM ConfigStrings::VERSIONSYM

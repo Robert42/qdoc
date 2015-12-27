@@ -41,6 +41,13 @@
 
 QT_BEGIN_NAMESPACE
 
+extern QStringList unlistedModules;
+
+bool fromUnlistedModule(Node* node)
+{
+  return unlistedModules.contains(node->root()->physicalModuleName());
+}
+
 static NodeMap emptyNodeMap_;
 static NodeMultiMap emptyNodeMultiMap_;
 bool QDocDatabase::debug = false;
@@ -943,7 +950,8 @@ void QDocDatabase::findAllClasses(InnerNode* node)
                         !(*c)->parent()->name().isEmpty())
                     className = (*c)->parent()->name()+"::"+className;
 
-                cppClasses_.insert(className, *c);
+                if(!fromUnlistedModule(*c))
+                  cppClasses_.insert(className, *c);
             }
             else if (((*c)->isQmlType() || (*c)->isQmlBasicType() ||
                       (*c)->isJsType() || (*c)->isJsBasicType()) && !(*c)->doc().isEmpty()) {
@@ -992,7 +1000,8 @@ void QDocDatabase::findAllFunctions(InnerNode* node)
                         !func->isInternal() &&
                         (func->metaness() != FunctionNode::Ctor) &&
                         (func->metaness() != FunctionNode::Dtor)) {
-                    funcIndex_[(*c)->name()].insert((*c)->parent()->fullDocumentName(), *c);
+                    if(!fromUnlistedModule(*c))
+                        funcIndex_[(*c)->name()].insert((*c)->parent()->fullDocumentName(), *c);
                 }
             }
         }
@@ -1032,7 +1041,8 @@ void QDocDatabase::findAllNamespaces(InnerNode* node)
                     // Ensure that the namespace's name is not empty (the root
                     // namespace has no name).
                     if (!(*c)->name().isEmpty()) {
-                        nmm_.insert((*c)->name(), *c);
+                        if(!fromUnlistedModule(*c))
+                            nmm_.insert((*c)->name(), *c);
                     }
                 }
             }
@@ -1057,13 +1067,15 @@ void QDocDatabase::findAllObsoleteThings(InnerNode* node)
                     if ((*c)->parent() && (*c)->parent()->type() == Node::Namespace &&
                         !(*c)->parent()->name().isEmpty())
                         name = (*c)->parent()->name() + "::" + name;
-                    obsoleteClasses_.insert(name, *c);
+                      if(!fromUnlistedModule(*c))
+                          obsoleteClasses_.insert(name, *c);
                 }
                 else if ((*c)->isQmlType() || (*c)->isJsType()) {
                     if (name.startsWith(QLatin1String("QML:")))
                         name = name.mid(4);
                     name = (*c)->logicalModuleName() + "::" + name;
-                    obsoleteQmlTypes_.insert(name,*c);
+                    if(!fromUnlistedModule(*c))
+                        obsoleteQmlTypes_.insert(name,*c);
                 }
             }
             else if ((*c)->type() == Node::Class) {
@@ -1082,7 +1094,8 @@ void QDocDatabase::findAllObsoleteThings(InnerNode* node)
                                 if ((*c)->parent() && (*c)->parent()->type() == Node::Namespace &&
                                     !(*c)->parent()->name().isEmpty())
                                     name = (*c)->parent()->name() + "::" + name;
-                                classesWithObsoleteMembers_.insert(name, *c);
+                                if(!fromUnlistedModule(*c))
+                                    classesWithObsoleteMembers_.insert(name, *c);
                                 inserted = true;
                             }
                             break;
@@ -1115,7 +1128,8 @@ void QDocDatabase::findAllObsoleteThings(InnerNode* node)
                                     !parent->name().isEmpty())
                                     name = parent->name() + "::" + name;
                             }
-                            qmlTypesWithObsoleteMembers_.insert(name,*c);
+                            if(!fromUnlistedModule(*c))
+                                qmlTypesWithObsoleteMembers_.insert(name,*c);
                             inserted = true;
                             break;
                         default:
@@ -1570,7 +1584,7 @@ void QDocDatabase::mergeCollections(Node::Genus genus, CNMap& cnm, const Node* r
                 break;
             }
         }
-        if (n) {
+        if (n && !fromUnlistedModule(n)) {
             if (values.size() > 1) {
                 foreach (CollectionNode* v, values) {
                     if (v != n) {

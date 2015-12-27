@@ -113,6 +113,7 @@ QString ConfigStrings::TABSIZE = QStringLiteral("tabsize");
 QString ConfigStrings::TAGFILE = QStringLiteral("tagfile");
 QString ConfigStrings::TRANSLATORS = QStringLiteral("translators");
 QString ConfigStrings::URL = QStringLiteral("url");
+QString ConfigStrings::UNLISTEDMODULES = QStringLiteral("unlistedmodules");
 QString ConfigStrings::VERSION = QStringLiteral("version");
 QString ConfigStrings::VERSIONSYM = QStringLiteral("versionsym");
 QString ConfigStrings::FILEEXTENSIONS = QStringLiteral("fileextensions");
