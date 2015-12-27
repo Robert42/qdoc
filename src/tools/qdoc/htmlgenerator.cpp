@@ -1357,7 +1357,13 @@ void HtmlGenerator::generateClassLikeNode(InnerNode* inner, CodeMarker* marker)
 
     Text subtitleText;
     if (rawTitle != fullTitle)
-        subtitleText << "(" << Atom(Atom::AutoLink, fullTitle) << ")" << Atom(Atom::LineBreak);
+    {
+        subtitleText << "(" << Atom(Atom::AutoLink, fullTitle) << ")";
+        if(inner->type() == Node::Class && dynamic_cast<ClassNode*>(inner)->isFinal())
+          subtitleText << Atom(Atom::C, "[final]");
+        subtitleText << Atom(Atom::LineBreak);
+    }
+
 
     generateHeader(title, inner, marker);
 
