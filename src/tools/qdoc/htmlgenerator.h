@@ -231,6 +231,8 @@ private:
     void writeDitaRefs(const DitaRefList& ditarefs);
     QXmlStreamWriter& xmlWriter();
 
+    void printLinkToNodeAndParents(Text& text, Node* node, const Node* relative);
+
     QMap<QString, QString> refMap;
     int codeIndent;
     HelpProjectWriter *helpProjectWriter;

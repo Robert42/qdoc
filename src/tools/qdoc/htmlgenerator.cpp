@@ -1338,6 +1338,41 @@ int HtmlGenerator::generateAtom(const Atom *atom, const Node *relative, CodeMark
     return skipAhead;
 }
 
+void HtmlGenerator::printLinkToNodeAndParents(Text& text, Node* node, const Node *relative)
+{
+  Node* parent = node->parent();
+  QString name = node->plainFullName();
+
+  if(parent && name.startsWith(parent->plainFullName()))
+  {
+    name = name.remove(parent->plainFullName());
+    printLinkToNodeAndParents(text, parent, relative);
+  }
+
+  if(name.startsWith("::"))
+  {
+    text << "::";
+    name = name.mid(2);
+  }
+
+#define NO_SELFLINK 0
+
+#if NO_SELFLINK
+  if(node != relative)
+  {
+#endif
+    text << Atom(Atom::Link, node->plainFullName())
+         << Atom(Atom::FormattingLeft, ATOM_FORMATTING_LINK)
+         << Atom(Atom::String, name)
+         << Atom(Atom::FormattingRight, ATOM_FORMATTING_LINK);
+#if NO_SELFLINK
+  }else
+  {
+    text << name;
+  }
+#endif
+}
+
 /*!
   Generate a reference page for a C++ class or a C++ namespace.
  */
@@ -1363,7 +1398,9 @@ void HtmlGenerator::generateClassLikeNode(InnerNode* inner, CodeMarker* marker)
     Text subtitleText;
     if (rawTitle != fullTitle)
     {
-        subtitleText << "(" << Atom(Atom::AutoLink, fullTitle) << ")";
+        subtitleText << "(";
+        printLinkToNodeAndParents(subtitleText, inner, inner);
+        subtitleText << ")";
         if(inner->type() == Node::Class && dynamic_cast<ClassNode*>(inner)->isFinal())
           subtitleText << Atom(Atom::SpanLabel, "[final]");
         subtitleText << Atom(Atom::LineBreak);
