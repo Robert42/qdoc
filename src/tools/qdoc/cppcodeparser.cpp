@@ -1623,6 +1623,7 @@ bool CppCodeParser::matchClassDecl(InnerNode *parent,
     readToken();
 
     bool compat = matchCompat();
+    bool final = false;
 
     if (tok != Tok_Ident)
         return false;
@@ -1640,6 +1641,12 @@ bool CppCodeParser::matchClassDecl(InnerNode *parent,
             }
         }
     }
+    QString name = tokenizer->previousLexeme();
+    if(tok == Tok_final)
+    {
+      final = true;
+      readToken();
+    }
     if (tok != Tok_Colon && tok != Tok_LeftBrace)
         return false;
 
@@ -1647,7 +1654,8 @@ bool CppCodeParser::matchClassDecl(InnerNode *parent,
       So far, so good. We have 'class Foo {' or 'class Foo :'.
       This is enough to recognize a class definition.
     */
-    ClassNode *classe = new ClassNode(parent, previousLexeme());
+    ClassNode *classe = new ClassNode(parent, name);
+    classe->setFinal(final);
     classe->setAccess(access);
     classe->setLocation(location());
     if (compat)

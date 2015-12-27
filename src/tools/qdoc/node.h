@@ -530,8 +530,11 @@ public:
     void setQmlElement(QmlTypeNode* qcn) { qmlelement = qcn; }
     virtual bool isAbstract() const Q_DECL_OVERRIDE { return abstract_; }
     virtual void setAbstract(bool b) Q_DECL_OVERRIDE { abstract_ = b; }
+    virtual bool isFinal() const { return final_; }
+    virtual void setFinal(bool b) { final_ = b; }
     PropertyNode* findPropertyNode(const QString& name);
     QmlTypeNode* findQmlBaseNode();
+
 
 private:
     QList<RelatedClass> bases_;
@@ -540,6 +543,7 @@ private:
     QList<UsingClause> usingClauses_;
     bool abstract_;
     bool wrapper_;
+    bool final_;
     QString obsoleteLink_;
     QmlTypeNode* qmlelement;
 };
