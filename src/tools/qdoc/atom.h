@@ -119,6 +119,7 @@ public:
         SnippetCommand,
         SnippetIdentifier,
         SnippetLocation,
+        SpanLabel,
         String,
         TableLeft,
         TableRight,

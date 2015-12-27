@@ -878,6 +878,8 @@ public:
     void setMetaness(Metaness metaness) { met = metaness; }
     void setVirtualness(Virtualness virtualness);
     void setConst(bool conste) { con = conste; }
+    void setOverride(bool o) { _override = o; }
+    void setFinal(bool f) { _final = f; }
     void setStatic(bool statique) { sta = statique; }
     void setOverload(bool overlode);
     void setReimp(bool r);
@@ -893,6 +895,8 @@ public:
     }
     Virtualness virtualness() const { return vir; }
     bool isConst() const { return con; }
+    bool isFinal() const { return _final; }
+    bool isOverride() const { return _override; }
     bool isStatic() const { return sta; }
     bool isOverload() const { return ove; }
     bool isReimp() const Q_DECL_OVERRIDE { return reimp; }
@@ -961,6 +965,8 @@ private:
     bool reimp: 1;
     bool attached_: 1;
     bool privateSignal_: 1;
+    bool _final : 1;
+    bool _override : 1;
     QList<Parameter> params;
     const FunctionNode* rf;
     const PropertyNode* ap;

@@ -211,6 +211,12 @@ QString CppCodeMarker::markedUpSynopsis(const Node *node,
             else if (func->metaness() == FunctionNode::Slot) {
                 bracketed += "slot";
             }
+
+            if(func->isFinal())
+              bracketed += "final";
+            if(func->isOverride())
+              bracketed += "override";
+
             if (!bracketed.isEmpty())
                 extra += QLatin1Char('[') + bracketed.join(' ') + QStringLiteral("] ");
         }

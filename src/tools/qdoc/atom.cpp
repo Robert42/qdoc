@@ -221,6 +221,7 @@ static const struct {
     { "SnippetCommand", Atom::SnippetCommand },
     { "SnippetIdentifier", Atom::SnippetIdentifier },
     { "SnippetLocation", Atom::SnippetLocation },
+    { "SpanLabel", Atom::SpanLabel},
     { "String", Atom::String },
     { "TableLeft", Atom::TableLeft },
     { "TableRight", Atom::TableRight },

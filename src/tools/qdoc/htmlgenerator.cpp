@@ -589,6 +589,11 @@ int HtmlGenerator::generateAtom(const Atom *atom, const Node *relative, CodeMark
               << trimmedTrailing(highlightedCode(indent(codeIndent,atom->string()),relative))
               << "</pre>\n";
         break;
+    case Atom::SpanLabel:
+        out() << "<span class=\"label\">"
+              << trimmedTrailing(highlightedCode(indent(codeIndent,atom->string()),relative))
+              << "</span>\n";
+        break;
     case Atom::Qml:
         out() << "<pre class=\"qml\">"
               << trimmedTrailing(highlightedCode(indent(codeIndent,atom->string()),relative))
@@ -1360,7 +1365,7 @@ void HtmlGenerator::generateClassLikeNode(InnerNode* inner, CodeMarker* marker)
     {
         subtitleText << "(" << Atom(Atom::AutoLink, fullTitle) << ")";
         if(inner->type() == Node::Class && dynamic_cast<ClassNode*>(inner)->isFinal())
-          subtitleText << Atom(Atom::C, "[final]");
+          subtitleText << Atom(Atom::SpanLabel, "[final]");
         subtitleText << Atom(Atom::LineBreak);
     }
 
@@ -3156,8 +3161,8 @@ void HtmlGenerator::generateQmlItem(const Node *node,
     if (summary)
         marked.replace("@name>", "b>");
 
-    marked.replace("<@extra>", "<code>");
-    marked.replace("</@extra>", "</code>");
+    marked.replace("<@extra>", "<span class='label'>");
+    marked.replace("</@extra>", "</span>");
 
     if (summary) {
         marked.remove("<@type>");
@@ -3403,8 +3408,8 @@ void HtmlGenerator::generateSynopsis(const Node *node,
         extraRegExp.setMinimal(true);
         marked.remove(extraRegExp);
     } else {
-        marked.replace("<@extra>", "<code>");
-        marked.replace("</@extra>", "</code>");
+        marked.replace("<@extra>", "<span class='label'>");
+        marked.replace("</@extra>", "</span>");
     }
 
     if (style != CodeMarker::Detailed) {

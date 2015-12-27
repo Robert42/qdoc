@@ -1539,6 +1539,14 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
 
     func->setConst(match(Tok_const));
 
+    for(int i=0; i<10; ++i)
+    {
+      if(match(Tok_final))
+        func->setFinal(true);
+      if(match(Tok_override))
+        func->setOverride(true);
+    }
+
     if (match(Tok_Equal) && match(Tok_Number))
         vir = FunctionNode::PureVirtual;
     func->setVirtualness(vir);

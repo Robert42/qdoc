@@ -1827,6 +1827,8 @@ FunctionNode::FunctionNode(InnerNode *parent, const QString& name)
       reimp(false),
       attached_(false),
       privateSignal_(false),
+      _final(false),
+      _override(false),
       rf(0),
       ap(0)
 {
