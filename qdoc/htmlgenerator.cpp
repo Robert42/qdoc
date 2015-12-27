@@ -82,6 +82,8 @@ static void addLink(const QString &linkTarget,
     }
 }
 
+bool fromUnlistedModule(Node* node);
+
 /*!
   Constructs the HTML output generator.
  */
@@ -2887,7 +2889,7 @@ void HtmlGenerator::generateAnnotatedList(const Node *relative,
     NodeMultiMap nmm;
     bool allInternal = true;
     foreach (Node* node, unsortedNodes) {
-        if (!node->isInternal() && !node->isObsolete()) {
+        if (!node->isInternal() && !node->isObsolete() && !fromUnlistedModule(node)) {
             allInternal = false;
             nmm.insert(node->fullName(relative), node);
         }
