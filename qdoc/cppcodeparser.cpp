@@ -1461,9 +1461,11 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
                     break;
             }
         }
+
         if (parent && (tok == Tok_Semicolon ||
                        tok == Tok_LeftBracket ||
-                       tok == Tok_Colon)
+                       tok == Tok_Colon ||
+                       tok == Tok_Equal)
                 && access != Node::Private) {
             if (tok == Tok_LeftBracket) {
                 returnType.appendHotspot();
@@ -1489,6 +1491,11 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
                 if (tok != Tok_Semicolon) {
                     return false;
                 }
+            }
+            else if (tok == Tok_Equal)
+            {
+              while(tok!=Tok_Semicolon)
+                readToken();
             }
 
             VariableNode *var = new VariableNode(parent, name);
