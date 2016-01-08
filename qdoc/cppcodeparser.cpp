@@ -1514,6 +1514,9 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
     }
     readToken();
 
+    if(name == "static_assert")
+      return false;
+
     FunctionNode *func = new FunctionNode(extra.type, parent, name, extra.isAttached);
     func->setAccess(access);
     func->setLocation(location());
