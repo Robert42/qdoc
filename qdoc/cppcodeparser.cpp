@@ -2221,13 +2221,29 @@ bool CppCodeParser::matchDocsAndStuff()
     const QSet<QString>& otherMetacommandsAllowed = otherMetaCommands();
     const QSet<QString>& metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
 
+    QStringList namespacesOpenedUntilNow;
+    QList<int> namespaceBraces;
+    namespaceBraces << -1;
+    int currentBraceDepth = 0;
+
     while (tok != Tok_Eoi) {
         if (match(Tok_namespace)) {
           if(tok == Tok_Ident)
           {
-            qdb_->insertOpenNamespace(lexeme());
+            namespacesOpenedUntilNow.append(lexeme());
+            qdb_->insertOpenNamespace(namespacesOpenedUntilNow.join("::"));
+            namespaceBraces << currentBraceDepth+1;
             readToken();
           }
+        }else if (match(Tok_LeftBrace)) {
+          ++currentBraceDepth;
+        }else if (match(Tok_RightBrace)) {
+          if(currentBraceDepth == namespaceBraces.last())
+          {
+            namespacesOpenedUntilNow.removeLast();
+            namespaceBraces.removeLast();
+          }
+          --currentBraceDepth;
         }else if (tok == Tok_Doc) {
             /*
               lexeme() returns an entire qdoc comment.
