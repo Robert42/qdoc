@@ -175,6 +175,8 @@ protected:
     static QStringList exampleDirs;
     QString exampleNameFilter;
     QString exampleImageFilter;
+
+    void skipTemplate();
 };
 
 #define COMMAND_CLASS                   Doc::alias("class")

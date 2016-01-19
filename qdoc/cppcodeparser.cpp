@@ -1353,6 +1353,23 @@ bool CppCodeParser::matchParameter(FunctionNode *func)
     return true;
 }
 
+void CppCodeParser::skipTemplate()
+{
+  while(match(Tok_template)) {
+    if(!match(Tok_LeftAngle))
+      qWarning() << "expected < after template";
+    int braceDepth=1;
+    while(tok!=Tok_Eoi && braceDepth>0)
+    {
+      if(tok == Tok_LeftAngle)
+        braceDepth++;
+      if(tok == Tok_RightAngle)
+        braceDepth--;
+      readToken();
+    }
+  }
+}
+
 bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
                                       QStringList *parentPathPtr,
                                       FunctionNode **funcPtr,
@@ -1363,6 +1380,8 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
     QStringList parentPath;
     QString name;
     bool compat = false;
+
+    skipTemplate();
 
     if (match(Tok_friend)) {
         return false;
