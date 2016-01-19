@@ -2222,7 +2222,13 @@ bool CppCodeParser::matchDocsAndStuff()
     const QSet<QString>& metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
 
     while (tok != Tok_Eoi) {
-        if (tok == Tok_Doc) {
+        if (match(Tok_namespace)) {
+          if(tok == Tok_Ident)
+          {
+            qdb_->insertOpenNamespace(lexeme());
+            readToken();
+          }
+        }else if (tok == Tok_Doc) {
             /*
               lexeme() returns an entire qdoc comment.
              */
