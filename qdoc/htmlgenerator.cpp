@@ -3277,7 +3277,7 @@ void HtmlGenerator::generateSection(const NodeList& nl,
         int i = 0;
         NodeList::ConstIterator m = nl.constBegin();
         while (m != nl.constEnd()) {
-            if ((*m)->access() == Node::Private) {
+            if ((*m)->access() == Node::Private || (*m)->isDeleted()) {
                 ++m;
                 continue;
             }
@@ -3976,6 +3976,9 @@ void HtmlGenerator::generateDetailedMember(const Node *node,
                                            const InnerNode *relative,
                                            CodeMarker *marker)
 {
+  if(node->isDeleted())
+    return;
+
     const EnumNode *enume;
 
 #ifdef GENERATE_MAC_REFS

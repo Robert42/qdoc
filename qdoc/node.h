@@ -197,6 +197,7 @@ public:
     bool isJsNode() const { return genus() == JS; }
     bool isCppNode() const { return genus() == CPP; }
 
+    virtual bool isDeleted() const {return false;}
     virtual bool isInnerNode() const = 0;
     virtual bool isCollectionNode() const { return false; }
     virtual bool isDocumentNode() const { return false; }
@@ -882,6 +883,7 @@ public:
     void setFinal(bool f) { _final = f; }
     void setStatic(bool statique) { sta = statique; }
     void setOverload(bool overlode);
+    void setDeleted(bool deleted);
     void setReimp(bool r);
     void addParameter(const Parameter& parameter);
     inline void setParameters(const QList<Parameter>& parameters);
@@ -899,6 +901,7 @@ public:
     bool isOverride() const { return _override; }
     bool isStatic() const { return sta; }
     bool isOverload() const { return ove; }
+    bool isDeleted() const override { return _deleted; }
     bool isReimp() const Q_DECL_OVERRIDE { return reimp; }
     bool isFunction() const Q_DECL_OVERRIDE { return true; }
     virtual bool isQmlSignal() const Q_DECL_OVERRIDE {
@@ -967,6 +970,7 @@ private:
     bool privateSignal_: 1;
     bool _final : 1;
     bool _override : 1;
+    bool _deleted : 1;
     QList<Parameter> params;
     const FunctionNode* rf;
     const PropertyNode* ap;

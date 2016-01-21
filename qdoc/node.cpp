@@ -1829,6 +1829,7 @@ FunctionNode::FunctionNode(InnerNode *parent, const QString& name)
       privateSignal_(false),
       _final(false),
       _override(false),
+      _deleted(false),
       rf(0),
       ap(0)
 {
@@ -1882,6 +1883,13 @@ void FunctionNode::setOverload(bool overlode)
 {
     parent()->setOverload(this, overlode);
     ove = overlode;
+}
+
+/*!
+ */
+void FunctionNode::setDeleted(bool deleted)
+{
+    this->_deleted = deleted;
 }
 
 /*!

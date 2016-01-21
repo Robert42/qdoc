@@ -1576,8 +1576,13 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
         func->setOverride(true);
     }
 
-    if (match(Tok_Equal) && match(Tok_Number))
+    if (match(Tok_Equal))
+    {
+      if(match(Tok_Number))
         vir = FunctionNode::PureVirtual;
+      if(match(Tok_delete))
+        func->setDeleted(true);
+    }
     func->setVirtualness(vir);
 
     if (match(Tok_Colon)) {
@@ -1595,6 +1600,7 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
             readToken();
         match(Tok_RightBrace);
     }
+
     if (parentPathPtr != 0)
         *parentPathPtr = parentPath;
     if (funcPtr != 0)
