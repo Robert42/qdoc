@@ -1050,6 +1050,7 @@ void CppCodeParser::reset()
 {
     tokenizer = 0;
     tok = 0;
+    braceDepth = 0;
     access = Node::Public;
     metaness = FunctionNode::Plain;
     lastPath_.clear();
@@ -1063,6 +1064,11 @@ void CppCodeParser::reset()
 void CppCodeParser::readToken()
 {
     tok = tokenizer->getToken();
+
+    if(tok == Tok_LeftBrace)
+      braceDepth++;
+    else if(tok == Tok_RightBrace)
+      braceDepth--;
 }
 
 /*!
@@ -2230,26 +2236,24 @@ bool CppCodeParser::matchDocsAndStuff()
     QStringList namespacesOpenedUntilNow;
     QList<int> namespaceBraces;
     namespaceBraces << -1;
-    int currentBraceDepth = 0;
 
     while (tok != Tok_Eoi) {
+
+        while(braceDepth < namespaceBraces.last())
+        {
+          namespaceBraces.removeLast();
+          namespacesOpenedUntilNow.removeLast();
+        }
+
         if (match(Tok_namespace)) {
           if(tok == Tok_Ident)
           {
             namespacesOpenedUntilNow.append(lexeme());
             qdb_->insertOpenNamespace(namespacesOpenedUntilNow.join("::"));
-            namespaceBraces << currentBraceDepth+1;
+            namespaceBraces << braceDepth+1;
             readToken();
+            match(Tok_LeftBrace);
           }
-        }else if (match(Tok_LeftBrace)) {
-          ++currentBraceDepth;
-        }else if (match(Tok_RightBrace)) {
-          if(currentBraceDepth == namespaceBraces.last())
-          {
-            namespacesOpenedUntilNow.removeLast();
-            namespaceBraces.removeLast();
-          }
-          --currentBraceDepth;
         }else if (tok == Tok_Doc) {
             /*
               lexeme() returns an entire qdoc comment.

@@ -154,6 +154,7 @@ protected:
     QMap<QString, Node::Type> nodeTypeMap;
     Tokenizer *tokenizer;
     int tok;
+    int braceDepth;
     Node::Access access;
     FunctionNode::Metaness metaness;
     QString physicalModuleName;
