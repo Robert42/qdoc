@@ -406,6 +406,19 @@ bool CodeParser::isParsingQdoc() const
  */
 void CodeParser::checkModuleInclusion(Node* n)
 {
+    if(n->type() == Node::Class)
+    {
+      ClassNode* classNode = static_cast<ClassNode*>(n);
+      if(classNode->includes().isEmpty())
+      {
+        if(n->access() != Node::Private && !n->doc().isEmpty())
+        {
+          n->doc().location().warning(tr("Class %1 has no \\inheaderfile command; ")
+                                      .arg(n->name()));
+        }
+      }
+    }
+
     if (n->physicalModuleName().isEmpty()) {
         n->setPhysicalModuleName(Generator::defaultModuleName());
         switch (n->type()) {
