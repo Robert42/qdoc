@@ -2241,6 +2241,8 @@ bool CppCodeParser::matchDocsAndStuff()
 
         while(braceDepth < namespaceBraces.last())
         {
+          qdb_->openNamespaces().removeAll(namespacesOpenedUntilNow.join("::"));
+
           namespaceBraces.removeLast();
           namespacesOpenedUntilNow.removeLast();
         }
@@ -2249,7 +2251,7 @@ bool CppCodeParser::matchDocsAndStuff()
           if(tok == Tok_Ident)
           {
             namespacesOpenedUntilNow.append(lexeme());
-            qdb_->insertOpenNamespace(namespacesOpenedUntilNow.join("::"));
+            qdb_->openNamespaces().prepend(namespacesOpenedUntilNow.join("::"));
             namespaceBraces << braceDepth+1;
             readToken();
             match(Tok_LeftBrace);

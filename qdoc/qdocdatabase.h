@@ -368,7 +368,8 @@ class QDocDatabase
                        bool generateInternalNodes = false);
 
     void clearOpenNamespaces() { openNamespaces_.clear(); }
-    void insertOpenNamespace(const QString& path) { openNamespaces_.insert(path); }
+    void insertOpenNamespace(const QString& path) { openNamespaces_.append(path); }
+    QList<QString>& openNamespaces() {return openNamespaces_;}
     void setShowInternal(bool value) { showInternal_ = value; }
     void setSingleExec(bool value) { singleExec_ = value; }
     void processForest();
@@ -449,7 +450,7 @@ class QDocDatabase
     NodeMultiMapMap         newSinceMaps_;
     NodeMapMap              funcIndex_;
     TextToNodeMap           legaleseTexts_;
-    QSet<QString>           openNamespaces_;
+    QList<QString>           openNamespaces_;
 };
 
 QT_END_NAMESPACE
