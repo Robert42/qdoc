@@ -901,7 +901,7 @@ public:
     bool isOverride() const { return _override; }
     bool isStatic() const { return sta; }
     bool isOverload() const { return ove; }
-    bool isDeleted() const override { return _deleted; }
+    bool isDeleted() const Q_DECL_OVERRIDE { return _deleted; }
     bool isReimp() const Q_DECL_OVERRIDE { return reimp; }
     bool isFunction() const Q_DECL_OVERRIDE { return true; }
     virtual bool isQmlSignal() const Q_DECL_OVERRIDE {
