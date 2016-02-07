@@ -72,6 +72,7 @@ public:
     virtual QStringList sourceFileNameFilter() Q_DECL_OVERRIDE;
     virtual void parseHeaderFile(const Location& location, const QString& filePath) Q_DECL_OVERRIDE;
     virtual void parseSourceFile(const Location& location, const QString& filePath) Q_DECL_OVERRIDE;
+    virtual void parseDeclarationsInSourceFile(const Location& location, const QString& filePath) Q_DECL_OVERRIDE;
     virtual void doneParsingHeaderFiles() Q_DECL_OVERRIDE;
     virtual void doneParsingSourceFiles() Q_DECL_OVERRIDE;
 
@@ -134,6 +135,9 @@ protected:
     bool matchProperty(InnerNode *parent);
     bool matchDeclList(InnerNode *parent);
     bool matchDocsAndStuff();
+    bool parseHeaderDeclarations();
+    bool matchDocsAndStuff(const QSet<QString>& topicCommandsAllowed,
+                           const QSet<QString>& metacommandsAllowed);
     bool makeFunctionNode(const QString &synopsis,
                           QStringList *parentPathPtr,
                           FunctionNode **funcPtr,

@@ -471,7 +471,19 @@ static void processQdocconfFile(const QString &fileName)
         */
         parsed = 0;
         Generator::debug("Parsing source files");
+
         QMap<QString,QString>::ConstIterator s = sources.constBegin();
+        while (s != sources.constEnd()) {
+            CodeParser *codeParser = CodeParser::parserForSourceFile(s.key());
+            if (codeParser) {
+                ++parsed;
+                Generator::debug(QString("Parsing declarations in " + s.key()));
+                codeParser->parseDeclarationsInSourceFile(config.location(), s.key());
+                usedParsers.insert(codeParser);
+            }
+            ++s;
+        }
+        s = sources.constBegin();
         while (s != sources.constEnd()) {
             CodeParser *codeParser = CodeParser::parserForSourceFile(s.key());
             if (codeParser) {

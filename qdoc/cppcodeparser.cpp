@@ -210,6 +210,30 @@ void CppCodeParser::parseSourceFile(const Location& location, const QString& fil
     currentFile_.clear();
 }
 
+
+void CppCodeParser::parseDeclarationsInSourceFile(const Location& location, const QString& filePath)
+{
+  QFile in(filePath);
+  currentFile_ = filePath;
+  if (!in.open(QIODevice::ReadOnly)) {
+      location.error(tr("Cannot open C++ source file '%1' (%2)").arg(filePath).arg(strerror(errno)));
+      currentFile_.clear();
+      return;
+  }
+
+  reset();
+  Location fileLocation(filePath);
+  Tokenizer fileTokenizer(fileLocation, in);
+  tokenizer = &fileTokenizer;
+  readToken();
+
+  qdb_->clearOpenNamespaces();
+
+  parseHeaderDeclarations();
+  in.close();
+  currentFile_.clear();
+}
+
 /*!
   This is called after all the C++ header files have been
   parsed. The most important thing it does is resolve C++
@@ -2223,15 +2247,73 @@ bool CppCodeParser::matchDeclList(InnerNode *parent)
 }
 
 /*!
+  This is called by parseDeclarationsInSourceFile() to do the actual parsing
+  and tree building.
+ */
+bool CppCodeParser::parseHeaderDeclarations()
+{
+  QSet<QString> topicCommandsAllowed;
+  topicCommandsAllowed.insert("headerfile");
+  QSet<QString> otherMetacommandsAllowed = otherMetaCommands();
+  QSet<QString> metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
+
+  while(tok != Tok_Eoi)
+  {
+    if(tok == Tok_Doc)
+    {
+      QString comment = lexeme();
+      readToken();
+
+      Location start_loc(location());
+      Doc::trimCStyleComment(start_loc,comment);
+      Location end_loc(location());
+
+      /*
+        Doc parses the comment.
+       */
+      Doc doc(start_loc,end_loc,comment,metacommandsAllowed, topicCommandsAllowed);
+
+      const TopicList& topics = doc.topicsUsed();
+
+      if(topics.isEmpty())
+        continue;
+
+      QString topic = topics.first().topic;
+
+      if(topic == COMMAND_HEADERFILE)
+      {
+        const QString& args = topics.first().args;
+        DocumentNode* dn = new DocumentNode(qdb_->primaryTreeRoot(),
+                                            args,
+                                            Node::HeaderFile,
+                                            Node::ApiPage);
+        Q_UNUSED(dn);
+      }
+    }else
+    {
+      readToken();
+    }
+  }
+
+  return true;
+}
+
+/*!
   This is called by parseSourceFile() to do the actual parsing
   and tree building.
  */
 bool CppCodeParser::matchDocsAndStuff()
 {
+  QSet<QString> topicCommandsAllowed = topicCommands();
+  QSet<QString> otherMetacommandsAllowed = otherMetaCommands();
+  QSet<QString> metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
+  return matchDocsAndStuff(topicCommandsAllowed, metacommandsAllowed);
+}
+
+bool CppCodeParser::matchDocsAndStuff(const QSet<QString>& topicCommandsAllowed,
+                                      const QSet<QString>& metacommandsAllowed)
+{
     ExtraFuncData extra;
-    const QSet<QString>& topicCommandsAllowed = topicCommands();
-    const QSet<QString>& otherMetacommandsAllowed = otherMetaCommands();
-    const QSet<QString>& metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
 
     QStringList namespacesOpenedUntilNow;
     QList<int> namespaceBraces;
