@@ -2253,7 +2253,8 @@ bool CppCodeParser::matchDeclList(InnerNode *parent)
 bool CppCodeParser::parseHeaderDeclarations()
 {
   QSet<QString> topicCommandsAllowed;
-  topicCommandsAllowed.insert("headerfile");
+  topicCommandsAllowed.insert(COMMAND_HEADERFILE);
+  topicCommandsAllowed.insert(Doc::DONT_WARN_ABOUT_UNKNOWN_COMMANDS());
   QSet<QString> otherMetacommandsAllowed = otherMetaCommands();
   QSet<QString> metacommandsAllowed = topicCommandsAllowed + otherMetacommandsAllowed;
 

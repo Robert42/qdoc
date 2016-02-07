@@ -1421,6 +1421,9 @@ void DocParser::parse(const QString& source,
                             priv->topics_.append(Topic(cmdStr,arg));
                         }
                     }
+                    else if(metaCommandSet.contains(Doc::DONT_WARN_ABOUT_UNKNOWN_COMMANDS()))
+                    {
+                    }
                     else if (macroHash()->contains(cmdStr)) {
                         const Macro &macro = macroHash()->value(cmdStr);
                         int numPendingFi = 0;

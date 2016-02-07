@@ -183,6 +183,7 @@ public:
     static QString canonicalTitle(const QString &title);
     static const Config* config() { return config_; }
 
+    static QString DONT_WARN_ABOUT_UNKNOWN_COMMANDS(){return "* Don't warn about unknown commands {1042cf29-3555-4b2e-9e90-bef010b0fc57}";}
 private:
     void detach();
     DocPrivate *priv;
