@@ -2284,11 +2284,12 @@ bool CppCodeParser::parseHeaderDeclarations()
       if(topic == COMMAND_HEADERFILE)
       {
         const QString& args = topics.first().args;
-        DocumentNode* dn = new DocumentNode(qdb_->primaryTreeRoot(),
+        DocumentNode* node = new DocumentNode(qdb_->primaryTreeRoot(),
                                             args,
                                             Node::HeaderFile,
                                             Node::ApiPage);
-        Q_UNUSED(dn);
+        processOtherMetaCommands(doc, node);
+        node->setDoc(doc);
       }
     }else
     {
@@ -2372,6 +2373,8 @@ bool CppCodeParser::matchDocsAndStuff(const QSet<QString>& topicCommandsAllowed,
                     isJsPropertyTopic = true;
                 }
             }
+            if(topic == COMMAND_HEADERFILE)
+              continue;
             NodeList nodes;
             DocList docs;
 
