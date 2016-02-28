@@ -402,6 +402,7 @@ int Tokenizer::getToken()
                     yyCh = getChar();
                     return Tok_SomeOperator;
                 } else {
+                    openAngle();
                     return Tok_LeftAngle;
                 }
             case '=':
@@ -414,7 +415,7 @@ int Tokenizer::getToken()
                 }
             case '>':
                 yyCh = getChar();
-                if (yyCh == '>') {
+                if (yyCh == '>' && !isClosingAngle()) {
                     yyCh = getChar();
                     if (yyCh == '=')
                         yyCh = getChar();
@@ -423,6 +424,7 @@ int Tokenizer::getToken()
                     yyCh = getChar();
                     return Tok_SomeOperator;
                 } else {
+                    closeAngle();
                     return Tok_RightAngle;
                 }
             case '?':
