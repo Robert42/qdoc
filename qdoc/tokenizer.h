@@ -41,6 +41,7 @@
 #include <qfile.h>
 #include <qstack.h>
 #include <qstring.h>
+#include <QDebug>
 
 #include "location.h"
 
@@ -164,6 +165,28 @@ private:
     int yyParenDepth;
     int yyBracketDepth;
     int yyCh;
+
+    // helpers for handling c++11 A<B<T>>
+    QStack<int> _numOpenBracketsAtLastOpenAngle;
+    void openAngle()
+    {
+      if (yyNumPreprocessorSkipping == 0)
+        _numOpenBracketsAtLastOpenAngle.push(yyParenDepth);
+    }
+    void closeAngle()
+    {
+      if(_numOpenBracketsAtLastOpenAngle.isEmpty())
+        return;
+
+      if (yyNumPreprocessorSkipping == 0)
+        _numOpenBracketsAtLastOpenAngle.pop();
+    }
+    bool isClosingAngle() const
+    {
+      if(_numOpenBracketsAtLastOpenAngle.size() < 2)
+        return false;
+      return _numOpenBracketsAtLastOpenAngle.top() == yyParenDepth;
+    }
 
     QString yyVersion;
     bool parsingMacro;
