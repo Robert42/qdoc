@@ -1435,6 +1435,7 @@ bool CppCodeParser::matchFunctionDecl(InnerNode *parent,
     if (!matchDataType(&returnType)) {
         if (tokenizer->parsingFnOrMacro()
                 && (match(Tok_Q_DECLARE_FLAGS) ||
+                    match(Tok_Q_DECLARE_OPERATORS_FOR_FLAGS) ||
                     match(Tok_Q_PROPERTY) ||
                     match(Tok_Q_PRIVATE_PROPERTY)))
             returnType = CodeChunk(previousLexeme());
